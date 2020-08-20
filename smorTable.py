@@ -18,7 +18,7 @@ def compareTimes(prevEndHour, startHour):
 
 
 def createTable(table, file, courseList):
-    file = open("timeTable.csv", "r")
+    file = open(file, "r")
     line = file.readlines()
     dayOfTheWeek = ""
 
