@@ -1,3 +1,5 @@
+import re
+
 class course:
     def __init__(self, name, startHour, startMin, endHour, endMin):
         self.name = name
@@ -16,6 +18,61 @@ def compareTimes(prevEndHour, startHour):
         startHour += 12
     return prevEndHour > startHour
 
+def processRows(list, dayOfTheWeek, table, courseList):
+    hrCount = 0
+    count = 0
+    startHour = 8
+    startMin = 0
+    endHour = 0
+    endMin = 0
+    for j in range(6, len(list)):
+
+        #check if course
+        if list[j] != "" and not list[j].isdigit() and not list[j].isspace():
+            cName=list[j][:]
+            cName=re.sub('[ ]','',cName)
+            cName=cName.lower()
+            if cName not in courseList:
+                courseList.append(cName)
+            duration = 0
+            if cName.find("Lab") != -1 or cName.find("(MSP") != -1:
+                endMin = startMin
+                endHour = (startHour + 3) % 12
+                #duration += 180
+
+            elif cName.find("english") != -1:
+                endMin = startMin
+                endHour = (startHour + 2) % 12
+                #duration += 120
+
+            else:
+                # duration += 90
+                endMin = (startMin + 30) % 60
+                if endMin == 0:
+                    endHour = startHour + 2
+                else:
+                    endHour = startHour + 1
+
+                if endHour > 12:
+                    endHour -= 12
+
+            c = course(list[j], startHour, startMin, endHour, endMin)
+            if (table[dayOfTheWeek][count] == None):
+                table[dayOfTheWeek][count] = []
+                table[dayOfTheWeek][count].append(c)
+            else:
+                table[dayOfTheWeek][count].append(c)
+        count += 1
+        if hrCount == 5:
+            startHour += 1
+            if startHour > 12:
+                startHour -= 12
+            startMin = 0
+            hrCount = 0
+        else:
+            startMin = (startMin + 10) % 60
+            hrCount += 1
+
 
 def createTable(table, file, courseList):
     file = open(file, "r")
@@ -24,59 +81,14 @@ def createTable(table, file, courseList):
 
     for i in range(4, len(line)):
         list = line[i].split(";")
-        hrCount = 0
-        count = 0
-        startHour = 8
-        startMin = 0
-        endHour = 0
-        endMin = 0
+
+
+        #set next day
         if list[0] != "":
             days = list[0].split(" ")
             dayOfTheWeek = days[0]
-        for j in range(6, len(list)):
-            if list[j] != "" and not list[j].isdigit() and not list[j].isspace(
-            ):
-                if list[j] not in courseList:
-                    courseList.append(list[j])
-                duration = 0
-                if list[j].find("Lab") != -1 or list[j].find("(MSP") != -1:
-                    endMin = startMin
-                    endHour = (startHour + 3) % 12
-                    #duration += 180
-
-                elif list[j].find("English") != -1:
-                    endMin = startMin
-                    endHour = (startHour + 2) % 12
-                    #duration += 120
-
-                else:
-                    # duration += 90
-                    endMin = (startMin + 30) % 60
-                    if endMin == 0:
-                        endHour = startHour + 2
-                    else:
-                        endHour = startHour + 1
-
-                    if endHour > 12:
-                        endHour -= 12
-
-                c = course(list[j], startHour, startMin, endHour, endMin)
-                if (table[dayOfTheWeek][count] == None):
-                    table[dayOfTheWeek][count] = []
-                    table[dayOfTheWeek][count].append(c)
-                else:
-                    table[dayOfTheWeek][count].append(c)
-            count += 1
-            if hrCount == 5:
-                startHour += 1
-                if startHour > 12:
-                    startHour -= 12
-                startMin = 0
-                hrCount = 0
-            else:
-                startMin = (startMin + 10) % 60
-                hrCount += 1
-
+        processRows(list, dayOfTheWeek, table, courseList)
+      
 
 if __name__ == "__main__":
     table = {
