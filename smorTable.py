@@ -8,6 +8,38 @@ class course:
         self.endHour = endHour
         self.endMin = endMin
 
+class DegCourseList:
+    def __init__(self, degree):
+        self.cList=[]
+        self.degree=degree
+
+    #takes class course
+    def addCourse(course):
+        cList.append(course)
+
+    #takes string course
+    def courseExists(course):
+        for c in cList:
+            if c.getName() == course:
+                return 1
+        return 0
+
+class CourseClass:
+    def __init__ (self, name):
+        self.name=name
+        self.sList=[] #section list
+    
+    def getName():
+        return self.name
+
+    def checkSection(Section):
+        for s in sList:
+            if s == Section:
+                return 1
+        return 0
+
+    def addSection(Section):
+        sList.append(Section)
 
 def compareTimes(prevEndHour, startHour):
     if (prevEndMin < 0):
@@ -17,6 +49,68 @@ def compareTimes(prevEndHour, startHour):
     if startHour < 8:
         startHour += 12
     return prevEndHour > startHour
+
+def getSectionFromCourse(cName):
+    degree=re.search(r'(.*?)',cName)
+    degree=degree.strip('()')
+    return re.split('-', degree)[1]
+
+def addSection2Course(cName, course):
+    #get section of course
+    section=getSectionFromCourse(cName)
+    
+    #see if section exists
+    found=0
+    for s in course.sList:
+        if name==n.dName:
+            found=1
+            break
+
+    if found==0:
+        course.sList.append(section)
+
+def getNameFromCourse(cName):
+    m=re.split('(', cName)
+    return m[0] 
+
+def addCourse2cList(degree, cName):
+    #get name of the course
+    name=getNameFromCourse(cName)
+
+    #see if course already in list
+    found=0
+    for n in degree.cList:
+        if name==n.dName:
+            found=1
+            break
+
+    if found==0:
+        degree.cList.append(CourseClass(name))
+        addSection(degree.cList[len(degree.cList)-1])
+    else:
+        addSection(n, cName)    
+
+def getDegFromCourse(cName):
+    degree=re.search(r'(.*?)',cName)
+    degree=degree.strip('()')
+    return re.split('-', degree)[0]
+
+def addCourse(cName, courseList):
+    #get degree name of the course
+    degree=getDegCourse(cName)
+
+    #see if degree already added
+    found=0
+    for d in courseList:
+        if degree==d.dName:
+            found=1
+            break
+
+    if found==0:
+        courseList.append(DegCourseList(degree))
+        addCourse2cList(courseList[len(courseList)-1])
+    else:
+        addCourse2cList(d, cName)    
 
 def processRows(list, dayOfTheWeek, table, courseList):
     hrCount = 0
