@@ -76,10 +76,9 @@ def compareTimes(prevEndHour, startHour):
 
 
 def getSectionFromCourse(cName):
-    degree = re.search(r'(.*?)', cName)
+    degree = re.search(r'\((.*?)\)',cName).group(1)
     degree = degree.strip('()')
     return re.split('-', degree)[1]
-
 
 def addSection2Course(cName, course):
     #get section of course
@@ -97,9 +96,8 @@ def addSection2Course(cName, course):
 
 
 def getNameFromCourse(cName):
-    m = re.split('(', cName)
+    m = re.split('\(', cName)
     return m[0]
-
 
 def addCourse2cList(degree, cName):
     #get name of the course
@@ -123,7 +121,6 @@ def getDegFromCourse(cName):
     degree = re.search(r'(.*?)', cName)
     degree = degree.strip('()')
     return re.split('-', degree)[0]
-
 
 def addCourse(cName, courseList):
     #get degree name of the course
