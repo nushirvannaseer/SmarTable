@@ -80,14 +80,14 @@ def getSectionFromCourse(cName):
     degree = degree.strip('()')
     return re.split('-', degree)[1]
 
-def addSection2Course(cName, course):
+def addSection2Course(course, cName ):
     #get section of course
     section = getSectionFromCourse(cName)
 
     #see if section exists
     found = 0
     for s in course.sList:
-        if name == n.dName:
+        if section == s:
             found = 1
             break
 
@@ -106,15 +106,15 @@ def addCourse2cList(degree, cName):
     #see if course already in list
     found = 0
     for n in degree.cList:
-        if name == n.dName:
+        if name == n.name:
             found = 1
             break
 
     if found == 0:
         degree.cList.append(CourseClass(name))
-        addSection(degree.cList[len(degree.cList) - 1])
+        addSection2Course(degree.cList[len(degree.cList) - 1], cName)
     else:
-        addSection(n, cName)
+        addSection2Course(n, cName)
 
 
 def getDegFromCourse(cName):
@@ -124,18 +124,18 @@ def getDegFromCourse(cName):
 
 def addCourse(cName, courseList):
     #get degree name of the course
-    degree = getDegCourse(cName)
+    degree = getDegFromCourse(cName)
 
     #see if degree already added
     found = 0
     for d in courseList:
-        if degree == d.dName:
+        if degree == d.degree:
             found = 1
             break
 
     if found == 0:
         courseList.append(DegCourseList(degree))
-        addCourse2cList(courseList[len(courseList) - 1])
+        addCourse2cList(courseList[len(courseList) - 1], cName)
     else:
         addCourse2cList(d, cName)
 
